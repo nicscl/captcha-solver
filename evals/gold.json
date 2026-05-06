@@ -1,0 +1,177 @@
+[
+  {
+    "path": "gold_images/real_001.jpeg",
+    "expected": "53883",
+    "source": "real:single-review"
+  },
+  {
+    "path": "gold_images/real_002.jpeg",
+    "expected": "19171",
+    "source": "real:single-review"
+  },
+  {
+    "path": "gold_images/real_003.png",
+    "expected": "e3ry6Jdp",
+    "source": "real:single-review"
+  },
+  {
+    "path": "gold_images/real_004.png",
+    "expected": "dsjcbka",
+    "source": "real:single-review"
+  },
+  {
+    "path": "gold_images/real_005.png",
+    "expected": "arch",
+    "source": "real:single-review"
+  },
+  {
+    "path": "gold_images/synth_001.png",
+    "expected": "brnT",
+    "source": "synthetic",
+    "kind": "mixed"
+  },
+  {
+    "path": "gold_images/synth_002.png",
+    "expected": "Kbfo",
+    "source": "synthetic",
+    "kind": "mixed"
+  },
+  {
+    "path": "gold_images/synth_003.png",
+    "expected": "77442",
+    "source": "synthetic",
+    "kind": "digits"
+  },
+  {
+    "path": "gold_images/synth_004.png",
+    "expected": "63193",
+    "source": "synthetic",
+    "kind": "digits"
+  },
+  {
+    "path": "gold_images/synth_005.png",
+    "expected": "jigb",
+    "source": "synthetic",
+    "kind": "lower"
+  },
+  {
+    "path": "gold_images/synth_006.png",
+    "expected": "8xIZ",
+    "source": "synthetic",
+    "kind": "mixed"
+  },
+  {
+    "path": "gold_images/synth_007.png",
+    "expected": "sbfhc",
+    "source": "synthetic",
+    "kind": "lower"
+  },
+  {
+    "path": "gold_images/synth_008.png",
+    "expected": "2633229",
+    "source": "synthetic",
+    "kind": "digits"
+  },
+  {
+    "path": "gold_images/synth_009.png",
+    "expected": "52429",
+    "source": "synthetic",
+    "kind": "digits"
+  },
+  {
+    "path": "gold_images/synth_010.png",
+    "expected": "Q0Wob",
+    "source": "synthetic",
+    "kind": "mixed"
+  },
+  {
+    "path": "gold_images/synth_011.png",
+    "expected": "bxosfm",
+    "source": "synthetic",
+    "kind": "lower"
+  },
+  {
+    "path": "gold_images/synth_012.png",
+    "expected": "iiUHUAK",
+    "source": "synthetic",
+    "kind": "mixed"
+  },
+  {
+    "path": "gold_images/synth_013.png",
+    "expected": "50016",
+    "source": "synthetic",
+    "kind": "digits"
+  },
+  {
+    "path": "gold_images/synth_014.png",
+    "expected": "KxKDpI6",
+    "source": "synthetic",
+    "kind": "mixed"
+  },
+  {
+    "path": "gold_images/synth_015.png",
+    "expected": "QHqN",
+    "source": "synthetic",
+    "kind": "mixed"
+  },
+  {
+    "path": "gold_images/synth_016.png",
+    "expected": "eassztn",
+    "source": "synthetic",
+    "kind": "lower"
+  },
+  {
+    "path": "gold_images/synth_017.png",
+    "expected": "0Fmxk7",
+    "source": "synthetic",
+    "kind": "mixed"
+  },
+  {
+    "path": "gold_images/synth_018.png",
+    "expected": "LEgw",
+    "source": "synthetic",
+    "kind": "mixed"
+  },
+  {
+    "path": "gold_images/synth_019.png",
+    "expected": "bwycm",
+    "source": "synthetic",
+    "kind": "lower"
+  },
+  {
+    "path": "gold_images/synth_020.png",
+    "expected": "hDIq2",
+    "source": "synthetic",
+    "kind": "mixed"
+  },
+  {
+    "path": "gold_images/synth_021.png",
+    "expected": "73638",
+    "source": "synthetic",
+    "kind": "digits"
+  },
+  {
+    "path": "gold_images/synth_022.png",
+    "expected": "23522",
+    "source": "synthetic",
+    "kind": "digits"
+  },
+  {
+    "path": "gold_images/synth_023.png",
+    "expected": "o41e",
+    "source": "synthetic",
+    "kind": "mixed"
+  },
+  {
+    "path": "gold_images/synth_024.png",
+    "expected": "fdyomuu",
+    "source": "synthetic",
+    "kind": "lower"
+  },
+  {
+    "path": "gold_images/synth_025.png",
+    "expected": "6348",
+    "source": "synthetic",
+    "kind": "digits"
+  }
+]
