@@ -25,6 +25,7 @@ import mimetypes
 import os
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -163,6 +164,8 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--limit", type=int, default=None,
                     help="roda so as N primeiras")
+    ap.add_argument("--concurrency", type=int, default=5,
+                    help="N de chamadas OpenRouter em paralelo (default 5)")
     args = ap.parse_args()
 
     if "OPENROUTER_API_KEY" not in os.environ:
@@ -183,11 +186,17 @@ def main() -> int:
             "2"))
     print()
 
-    rows = []
-    for i, item in enumerate(items, 1):
-        row = run_one(item)
-        rows.append(row)
-        print_row(i, n, row)
+    # paraleliza N chamadas de OpenRouter; mantém ordem de input nas saídas
+    rows: list[dict] = [None] * n  # type: ignore[list-item]
+    done = 0
+    with ThreadPoolExecutor(max_workers=args.concurrency) as ex:
+        fut_to_idx = {ex.submit(run_one, item): i
+                      for i, item in enumerate(items)}
+        for fut in as_completed(fut_to_idx):
+            idx = fut_to_idx[fut]
+            rows[idx] = fut.result()
+            done += 1
+            print_row(done, n, rows[idx])
 
     ts = time.strftime("%Y%m%d-%H%M%S")
     csv_path = RUNS / f"run_{ts}.csv"
