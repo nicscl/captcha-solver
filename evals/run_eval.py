@@ -33,6 +33,7 @@ import os
 import string
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -201,6 +202,8 @@ def main() -> int:
                     help="ex: --threshold exact_match=0.85; pode repetir")
     ap.add_argument("--out", type=Path, default=None,
                     help="caminho do JSON; default evals/results/run_<ts>.json")
+    ap.add_argument("--concurrency", type=int, default=5,
+                    help="N de chamadas OpenRouter em paralelo (default 5)")
     args = ap.parse_args()
 
     if "OPENROUTER_API_KEY" not in os.environ:
@@ -217,11 +220,17 @@ def main() -> int:
     print(c(f"run_eval — {n} amostras (model={MODEL})", "1;36"))
     print()
 
-    samples = []
-    for i, item in enumerate(items, 1):
-        s = run_one(item)
-        samples.append(s)
-        print_row(i, n, s)
+    # paraleliza N chamadas de OpenRouter; mantém ordem de input nas saídas
+    samples: list[dict] = [None] * n  # type: ignore[list-item]
+    done = 0
+    with ThreadPoolExecutor(max_workers=args.concurrency) as ex:
+        fut_to_idx = {ex.submit(run_one, item): i
+                      for i, item in enumerate(items)}
+        for fut in as_completed(fut_to_idx):
+            idx = fut_to_idx[fut]
+            samples[idx] = fut.result()
+            done += 1
+            print_row(done, n, samples[idx])
 
     summary = aggregate(samples)
     by_kind = group_by(samples, "kind")

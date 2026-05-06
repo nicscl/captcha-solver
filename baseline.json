@@ -1,15 +1,15 @@
 {
   "files": {
     "cli.py": {
-      "funcs": 0,
-      "loc": 14,
-      "max_func_loc": 0,
+      "funcs": 1,
+      "loc": 20,
+      "max_func_loc": 6,
       "todos": 0
     },
     "evals/error_analysis.py": {
       "funcs": 9,
-      "loc": 170,
-      "max_func_loc": 44,
+      "loc": 178,
+      "max_func_loc": 52,
       "todos": 0
     },
     "evals/generate_synthetic.py": {
@@ -20,8 +20,8 @@
     },
     "evals/run_eval.py": {
       "funcs": 12,
-      "loc": 229,
-      "max_func_loc": 77,
+      "loc": 237,
+      "max_func_loc": 85,
       "todos": 0
     },
     "main.py": {
@@ -44,10 +44,10 @@
     }
   },
   "totals": {
-    "max_file_loc": 229,
-    "max_func_loc": 77,
-    "total_funcs": 33,
-    "total_loc": 726,
+    "max_file_loc": 237,
+    "max_func_loc": 85,
+    "total_funcs": 34,
+    "total_loc": 748,
     "total_todos": 0
   }
 }
