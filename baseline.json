@@ -1,0 +1,35 @@
+{
+  "files": {
+    "cli.py": {
+      "funcs": 0,
+      "loc": 14,
+      "max_func_loc": 0,
+      "todos": 0
+    },
+    "main.py": {
+      "funcs": 1,
+      "loc": 11,
+      "max_func_loc": 7,
+      "todos": 0
+    },
+    "quality_gate.py": {
+      "funcs": 5,
+      "loc": 121,
+      "max_func_loc": 35,
+      "todos": 0
+    },
+    "solver.py": {
+      "funcs": 1,
+      "loc": 38,
+      "max_func_loc": 29,
+      "todos": 0
+    }
+  },
+  "totals": {
+    "max_file_loc": 121,
+    "max_func_loc": 35,
+    "total_funcs": 7,
+    "total_loc": 184,
+    "total_todos": 0
+  }
+}
