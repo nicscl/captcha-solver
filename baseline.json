@@ -13,23 +13,23 @@
       "todos": 0
     },
     "quality_gate.py": {
-      "funcs": 5,
-      "loc": 121,
-      "max_func_loc": 35,
+      "funcs": 7,
+      "loc": 185,
+      "max_func_loc": 63,
       "todos": 0
     },
     "solver.py": {
-      "funcs": 1,
-      "loc": 38,
-      "max_func_loc": 29,
+      "funcs": 2,
+      "loc": 36,
+      "max_func_loc": 17,
       "todos": 0
     }
   },
   "totals": {
-    "max_file_loc": 121,
-    "max_func_loc": 35,
-    "total_funcs": 7,
-    "total_loc": 184,
+    "max_file_loc": 185,
+    "max_func_loc": 63,
+    "total_funcs": 10,
+    "total_loc": 246,
     "total_todos": 0
   }
 }

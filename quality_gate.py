@@ -90,26 +90,111 @@ WORSE_IF_GREATER = {"loc", "max_func_loc", "todos",
                     "total_loc", "total_todos", "max_file_loc"}
 
 
-def diff(baseline: dict, current: dict) -> list[str]:
+USE_COLOR = sys.stdout.isatty()
+C_RESET = "\033[0m" if USE_COLOR else ""
+C_DIM = "\033[2m" if USE_COLOR else ""
+C_BOLD = "\033[1m" if USE_COLOR else ""
+C_GREEN = "\033[32m" if USE_COLOR else ""
+C_RED = "\033[31m" if USE_COLOR else ""
+C_YELLOW = "\033[33m" if USE_COLOR else ""
+C_CYAN = "\033[36m" if USE_COLOR else ""
+
+METRIC_LABELS = {
+    "loc": "loc",
+    "funcs": "funcs",
+    "max_func_loc": "max_func_loc",
+    "todos": "todos",
+    "total_loc": "total_loc",
+    "total_funcs": "total_funcs",
+    "total_todos": "total_todos",
+    "max_file_loc": "max_file_loc",
+}
+
+
+def classify(metric: str, base: int, cur: int) -> tuple[str, str, str]:
+    """Return (symbol, color, note) for a metric comparison."""
+    delta = cur - base
+    if delta == 0:
+        return "=", C_DIM, "unchanged"
+    if metric in WORSE_IF_GREATER:
+        if delta > 0:
+            return "✗", C_RED, f"REGRESSION (+{delta})"
+        return "↓", C_GREEN, f"improved ({delta})"
+    if delta > 0:
+        return "+", C_YELLOW, f"+{delta} (no rule)"
+    return "-", C_DIM, f"{delta}"
+
+
+def render_row(metric: str, base: int, cur: int) -> str:
+    sym, color, note = classify(metric, base, cur)
+    label = METRIC_LABELS.get(metric, metric)
+    return (f"    {color}{sym}{C_RESET} {label:<14} "
+            f"{base:>4} → {cur:<4}  {color}{note}{C_RESET}")
+
+
+def render_report(baseline: dict, current: dict) -> tuple[str, list[str]]:
+    """Build full report; return (text, regressions)."""
+    lines = []
     regressions = []
 
+    bf, cf = baseline["files"], current["files"]
+    all_files = sorted(set(bf) | set(cf))
+
+    lines.append(f"{C_BOLD}{C_CYAN}Quality Gate — captcha-solver{C_RESET}")
+    lines.append(f"{C_DIM}baseline: {BASELINE.name}  |  "
+                 f"{len(current['files'])} arquivos analisados{C_RESET}")
+    lines.append("")
+    lines.append(f"{C_BOLD}por arquivo{C_RESET}")
+
+    for path in all_files:
+        base_m = bf.get(path)
+        cur_m = cf.get(path)
+        if base_m is None:
+            lines.append(f"\n  {C_YELLOW}[NEW]{C_RESET} {path}")
+            for k, v in cur_m.items():
+                lines.append(f"    + {METRIC_LABELS.get(k, k):<14} "
+                             f"{'-':>4} → {v:<4}  {C_YELLOW}new file{C_RESET}")
+            continue
+        if cur_m is None:
+            lines.append(f"\n  {C_DIM}[REMOVED] {path}{C_RESET}")
+            continue
+
+        lines.append(f"\n  {C_BOLD}{path}{C_RESET}")
+        for k, base_v in base_m.items():
+            cur_v = cur_m.get(k, 0)
+            lines.append(render_row(k, base_v, cur_v))
+            if k in WORSE_IF_GREATER and cur_v > base_v:
+                regressions.append(f"{path}:{k}: {base_v} → {cur_v}")
+
+    lines.append("")
+    lines.append(f"{C_BOLD}totais{C_RESET}")
     bt, ct = baseline["totals"], current["totals"]
     for k, base_v in bt.items():
         cur_v = ct.get(k, 0)
+        lines.append(render_row(k, base_v, cur_v))
         if k in WORSE_IF_GREATER and cur_v > base_v:
-            regressions.append(f"totals.{k}: {base_v} -> {cur_v}")
+            regressions.append(f"totals.{k}: {base_v} → {cur_v}")
 
-    bf, cf = baseline["files"], current["files"]
-    for path, base_m in bf.items():
-        cur_m = cf.get(path)
-        if cur_m is None:
-            continue
-        for k, base_v in base_m.items():
-            cur_v = cur_m.get(k, 0)
-            if k in WORSE_IF_GREATER and cur_v > base_v:
-                regressions.append(f"{path}:{k}: {base_v} -> {cur_v}")
+    lines.append("")
+    lines.append("─" * 60)
+    if regressions:
+        lines.append(f"{C_BOLD}{C_RED}✗ FALHOU{C_RESET} — "
+                     f"{len(regressions)} metrica(s) pioraram:")
+        for r in regressions:
+            lines.append(f"    {C_RED}•{C_RESET} {r}")
+        lines.append("")
+        lines.append(f"{C_DIM}Corrija a regressao OU rode "
+                     f"`quality_gate.py --update` se a piora for "
+                     f"intencional (justifique no PR).{C_RESET}")
+    else:
+        improved = sum(1 for path in cf for k, v in cf[path].items()
+                       if path in bf and k in WORSE_IF_GREATER
+                       and v < bf[path].get(k, v))
+        lines.append(f"{C_BOLD}{C_GREEN}✓ PASSOU{C_RESET} — "
+                     f"todas as metricas dentro do baseline"
+                     + (f" ({improved} melhoria(s))" if improved else ""))
 
-    return regressions
+    return "\n".join(lines), regressions
 
 
 def main() -> int:
@@ -122,31 +207,19 @@ def main() -> int:
 
     if args.update:
         BASELINE.write_text(json.dumps(current, indent=2, sort_keys=True) + "\n")
-        print(f"baseline atualizado: {BASELINE.name}")
+        print(f"{C_GREEN}✓{C_RESET} baseline atualizado: {BASELINE.name}")
         return 0
 
     if not BASELINE.exists():
-        print("ERRO: baseline.json nao existe. Rode com --update para criar.",
-              file=sys.stderr)
+        print(f"{C_RED}ERRO{C_RESET}: baseline.json nao existe. "
+              f"Rode com --update para criar.", file=sys.stderr)
         return 2
 
     baseline = json.loads(BASELINE.read_text())
-    regressions = diff(baseline, current)
-
-    if regressions:
-        print("QUALITY GATE FALHOU — metricas pioraram:", file=sys.stderr)
-        for r in regressions:
-            print(f"  - {r}", file=sys.stderr)
-        print("\nFix the regression OR rode `quality_gate.py --update` "
-              "se a piora for intencional e justificada no PR.", file=sys.stderr)
-        return 1
-
-    t = current["totals"]
-    print(f"OK — {len(current['files'])} arquivos, "
-          f"{t['total_loc']} loc, {t['total_funcs']} funcs, "
-          f"max_file={t['max_file_loc']}, max_func={t['max_func_loc']}, "
-          f"todos={t['total_todos']}")
-    return 0
+    report, regressions = render_report(baseline, current)
+    out = sys.stderr if regressions else sys.stdout
+    print(report, file=out)
+    return 1 if regressions else 0
 
 
 if __name__ == "__main__":
