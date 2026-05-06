@@ -10,4 +10,8 @@ if [ "${1:-}" = "eval" ]; then
   shift
   exec python3 evals/error_analysis.py "$@"
 fi
+if [ "${1:-}" = "eval3" ]; then
+  shift
+  exec python3 evals/run_eval.py "$@"
+fi
 python3 cli.py "$@"

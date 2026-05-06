@@ -18,6 +18,12 @@
       "max_func_loc": 31,
       "todos": 0
     },
+    "evals/run_eval.py": {
+      "funcs": 12,
+      "loc": 229,
+      "max_func_loc": 77,
+      "todos": 0
+    },
     "main.py": {
       "funcs": 1,
       "loc": 11,
@@ -38,10 +44,10 @@
     }
   },
   "totals": {
-    "max_file_loc": 185,
-    "max_func_loc": 63,
-    "total_funcs": 21,
-    "total_loc": 497,
+    "max_file_loc": 229,
+    "max_func_loc": 77,
+    "total_funcs": 33,
+    "total_loc": 726,
     "total_todos": 0
   }
 }
